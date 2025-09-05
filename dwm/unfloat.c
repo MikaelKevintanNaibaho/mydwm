@@ -1,4 +1,5 @@
-void unfloatvisible(const Arg *arg)
+void
+unfloatvisible(const Arg *arg)
 {
     Client *c;
 

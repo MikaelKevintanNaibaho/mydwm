@@ -14,16 +14,17 @@ static const char unknown_str[] = "n/a";
  *
  * battery_perc        battery percentage              battery name (BAT0)
  *                                                     NULL on OpenBSD/FreeBSD
- * battery_state       battery charging state          battery name (BAT0)
- *                                                     NULL on OpenBSD/FreeBSD
  * battery_remaining   battery remaining HH:MM         battery name (BAT0)
  *                                                     NULL on OpenBSD/FreeBSD
- * cpu_perc            cpu usage in percent            NULL
+ * battery_state       battery charging state          battery name (BAT0)
+ *                                                     NULL on OpenBSD/FreeBSD
+ * cat                 read arbitrary file             path
  * cpu_freq            cpu frequency in MHz            NULL
+ * cpu_perc            cpu usage in percent            NULL
  * datetime            date and time                   format string (%F %T)
  * disk_free           free disk space in GB           mountpoint path (/)
  * disk_perc           disk usage in percent           mountpoint path (/)
- * disk_total          total disk space in GB          mountpoint path (/")
+ * disk_total          total disk space in GB          mountpoint path (/)
  * disk_used           used disk space in GB           mountpoint path (/)
  * entropy             available entropy               NULL
  * gid                 GID of current user             NULL
@@ -55,32 +56,35 @@ static const char unknown_str[] = "n/a";
  *                                                     thermal zone on FreeBSD
  *                                                     (tz0, tz1, etc.)
  * uid                 UID of current user             NULL
+ * up                  interface is running            interface name (eth0)
  * uptime              system uptime                   NULL
  * username            username of current user        NULL
  * vol_perc            OSS/ALSA volume in percent      mixer file (/dev/mixer)
- * wifi_perc           WiFi signal in percent          interface name (wlan0)
+ *                                                     NULL on OpenBSD/FreeBSD
  * wifi_essid          WiFi ESSID                      interface name (wlan0)
+ * wifi_perc           WiFi signal in percent          interface name (wlan0)
  */
 static const char vol[] =
-    "[ \"$(pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $(pactl list short sinks | wc -l) * 2 )) | tail -n 1 | awk '{print $5}')\" != '' ] \
+  "[ \"$(pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $(pactl list short sinks | wc -l) * 2 )) | tail -n 1 | awk '{print $5}')\" != '' ] \
     && printf \"%s\" \"$(pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $(pactl list short sinks | wc -l) * 2 )) | tail -n 1 | awk '{print $5}')\" \
     || printf 'Off'";
 
-static const char mic[] = "[ `amixer sget Capture | tail -n 1 | awk '{print $6;}'` = \"[on]\" ] \
+static const char mic[] =
+  "[ `amixer sget Capture | tail -n 1 | awk '{print $6;}'` = \"[on]\" ] \
                                    && printf \"`amixer sget Capture | tail -n 1 | awk '{print $5;}' | grep -Po '\\[\\K[^%]*'`%%\" \
                                    || printf 'Off'";
 
 static const struct arg args[] = {
-    /* function format          argument */
-    { cpu_perc, "  %s%% | ", NULL },
-    { ram_used, "  %s", NULL },
-    { ram_perc, "(%s%%) | ", NULL },
-    //{ run_command,          " %s%% ",      "xbacklight -get" },
-    { battery_perc, "  %s%%", "BAT1" },
-    { battery_state, "(%s) | ", "BAT1" },
-    { run_command, "  %s | ", vol },
-    //{run_command, " %s | ", mic},
-    { wifi_essid, "  %s | ", "wlo1" },
-    { keymap, "  %s | ", NULL },
-    { datetime, "  %s", "%a %F %I:%M %p" },
+  /* function format          argument */
+  {cpu_perc, "  %s%% | ", NULL},
+  {ram_used, "  %s", NULL},
+  {ram_perc, "(%s%%) | ", NULL},
+  //{ run_command,          " %s%% ",      "xbacklight -get" },
+  {battery_perc, "  %s%%", "BAT1"},
+  {battery_state, "(%s) | ", "BAT1"},
+  {run_command, "  %s | ", vol},
+  //{run_command, " %s | ", mic},
+  {wifi_essid, "  %s | ", "wlo1"},
+  {keymap, "  %s | ", NULL},
+  {datetime, "  %s", "%a %F %I:%M %p"},
 };

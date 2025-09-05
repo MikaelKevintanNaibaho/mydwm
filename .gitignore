@@ -1,2 +1,7 @@
 *.rej
 *.orig
+dwm/.git/
+st/.git/
+dmenu/.git/
+slstatus/.git/
+dunst/.git/
