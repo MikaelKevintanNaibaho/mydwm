@@ -142,6 +142,11 @@ static const Key keys[] = {
    XK_w,
    spawn,
    {.v = (const char *[]){"/home/mikael/mydwm/script/dmenu_wifi.sh", NULL}}},  // dmenu_wifi
+  {MODKEY | ShiftMask,
+   XK_b,
+   spawn,
+   {.v = (const char *[]){"/home/mikael/mydwm/script/bt_controll.sh", NULL}}},
+
   {MODKEY, XK_0, view, {.ui = ~0}},
   {MODKEY | ShiftMask, XK_0, tag, {.ui = ~0}},
   {MODKEY, XK_comma, focusmon, {.i = -1}},
